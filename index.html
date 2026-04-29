@@ -307,14 +307,14 @@ function getSiblings(q){
   return QS.filter(s=>s.y===q.y&&s.d===q.d&&s.n.replace(/[a-g]$/,'')==b&&s.sub!=='')
            .sort((a,x)=>a.sub<x.sub?-1:1);
 }
-function countQs(t,l){return QS.filter(q=>q.t===t&&q.l===l).length;}
+function countQs(t,l){return QS.filter(q=>q.t===t&&q.l===l&&q.d!=='C').length;}
 
 function initHome(){
   document.getElementById('topicGrid').innerHTML=TOPICS.map(t=>`
-    <div class="topic-card${QS.filter(q=>q.t===t.id).length===0?' dim':''}" id="tc-${t.id}"
+    <div class="topic-card${QS.filter(q=>q.t===t.id&&q.d!=='C').length===0?' dim':''}" id="tc-${t.id}"
          onclick="selectTopic('${t.id}')" style="--tc:${t.color};--tc-rgb:${t.rgb}">
       <span class="topic-icon">${t.icon}</span><div class="topic-name">${t.label}</div>
-      <div class="topic-count">${QS.filter(q=>q.t===t.id).length} uppgifter</div>
+      <div class="topic-count">${QS.filter(q=>q.t===t.id&&q.d!=='C').length} uppgifter</div>
       <div class="topic-check">✓</div></div>`).join('');
   renderLevels();
   document.getElementById('cGrid').innerHTML=C_YEARS.map(y=>{
@@ -329,7 +329,7 @@ initHome();
 
 function renderLevels(){
   document.getElementById('levelRow').innerHTML=LEVELS.map(l=>{
-    const n=selTopic?countQs(selTopic,l.id):QS.filter(q=>q.l===l.id).length;
+    const n=selTopic?countQs(selTopic,l.id):QS.filter(q=>q.l===l.id&&q.d!=='C').length;
     return `<div class="level-card${n===0?' dim':''}" id="lc-${l.id}"
       onclick="selectLevel('${l.id}')" style="--lc:${l.color};--lc-rgb:${l.rgb}">
       <span class="level-letter" style="color:${l.color}">${l.id}</span>
@@ -404,9 +404,9 @@ function startPracticeAE(){
   showScreen('Practice');loadQ();
 }
 function pickFresh(){
-  let pool=QS.filter(q=>q.t===selTopic&&q.l===selLevel&&!usedIds.has(q.id));
+  let pool=QS.filter(q=>q.t===selTopic&&q.l===selLevel&&q.d!=='C'&&!usedIds.has(q.id));
   if(!pool.length){usedIds.clear();if(curQ)usedIds.add(curQ.id);
-    pool=QS.filter(q=>q.t===selTopic&&q.l===selLevel&&!usedIds.has(q.id));}
+    pool=QS.filter(q=>q.t===selTopic&&q.l===selLevel&&q.d!=='C'&&!usedIds.has(q.id));}
   return pool.length?pool[Math.floor(Math.random()*pool.length)]:null;
 }
 
