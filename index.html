@@ -190,9 +190,9 @@ textarea.ans-input:disabled{opacity:.5}
 
 /* ── Split layout for Delprov C ─────────────────────────────── */
 .split-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1400px;margin:0 auto;padding:26px 20px 100px;align-items:start}
-.split-left{position:sticky;top:70px}
+.split-left{overflow-y:visible}
 .split-left .page-wrap{margin-bottom:8px}
-.split-right{}
+.split-right{position:sticky;top:70px;max-height:calc(100vh - 90px);overflow-y:auto;scrollbar-width:thin}
 
 /* Follow-up chat */
 .chat-area{margin-top:16px}
@@ -212,7 +212,7 @@ textarea.ans-input:disabled{opacity:.5}
 
 @media(max-width:900px){
   .split-layout{grid-template-columns:1fr}
-  .split-left{position:static}
+  .split-right{position:static;max-height:none}
 }
 @media(max-width:560px){.topic-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
