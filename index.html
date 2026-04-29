@@ -370,7 +370,28 @@ function showScreen(n){
   document.getElementById('btnHome').classList.toggle('active',n==='Home');
   document.getElementById('btnHist').classList.toggle('active',n==='History');
 }
-function goHome(){showScreen('Home');}
+function goHome(){
+  // Restore screenPractice to original AE structure if it was replaced by C split-layout
+  const ps=document.getElementById('screenPractice');
+  if(document.getElementById('splitLayout')){
+    ps.innerHTML=`
+      <div class="practice">
+        <div class="p-topbar"><div class="badges" id="badgeRow"></div><span class="q-counter" id="qCounter">#1</span></div>
+        <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <div id="practiceArea"></div>
+        <div class="ses" id="sesStats" style="display:none">
+          <div class="sec-label" style="margin-bottom:9px"><strong>Din session</strong></div>
+          <div class="score-grid">
+            <div class="score-card"><span class="score-num" id="sTotal" style="color:var(--accent)">0</span><div class="score-lbl">Uppgifter</div></div>
+            <div class="score-card"><span class="score-num" id="sCorrect" style="color:var(--green)">0</span><div class="score-lbl">Rätt</div></div>
+            <div class="score-card"><span class="score-num" id="sPct" style="color:var(--teal)">—</span><div class="score-lbl">Träffsäkerhet</div></div>
+          </div>
+        </div>
+      </div>`;
+  }
+  loading=false;
+  showScreen('Home');
+}
 function goHistory(){renderHistory();showScreen('History');}
 
 /* ══ AE MODE ══════════════════════════════════════════════════════════════ */
