@@ -771,26 +771,23 @@ async function checkAns(){
       level:curQ.l,answer:ans,correct:ok});
     inp.disabled=true;
 
-    document.getElementById('fbArea').innerHTML=
-      '<div class="fb '+(ok?'ok':'bad')+'">'
-      +'<div class="fb-head"><span class="fb-icon">'+(ok?'✅':'❌')+'</span>'
-      +'<span class="fb-title">'+(ok?'Rätt svar!':'Fel svar')+'</span></div>'
-      +'<div class="fb-short">'+esc(fb.shortFeedback||'')+'</div>'
-      // Show action buttons: tips, try again, or ask questions
-      +(ok
-        ? '<div class="fb-actions">'
-          +'<button class="fb-btn" onclick="document.getElementById(\'chatArea\').style.display=\'block\';document.getElementById(\'chatInput\').focus()">Ställ en fråga</button>'
-          +'<button class="fb-btn fb-btn-next" onclick="if(mode===\'extra\'&&curQ.extraId)markTaskComplete(curQ.extraId);loadQ()">Nästa uppgift →</button>'
-          +'</div>'
-        : '<div class="fb-actions">'
+    document.getElementById('fbArea').innerHTML=(function(){
+      var nxt='<button class="fb-btn fb-btn-next" onclick="if(mode===\'extra\'&&curQ.extraId)markTaskComplete(curQ.extraId);loadQ()">Nästa uppgift →</button>';
+      var chat='<button class="fb-btn" onclick="document.getElementById(\'chatArea\').style.display=\'block\';document.getElementById(\'chatInput\').focus()">Ställ en fråga</button>';
+      var btns=ok
+        ?'<div class="fb-actions">'+chat+nxt+'</div>'
+        :'<div class="fb-actions">'
           +'<button class="fb-btn" onclick="showHint()">💡 Få ett tips</button>'
           +'<button class="fb-btn" onclick="tryAgain()">🔄 Försök igen</button>'
-          +'<button class="fb-btn" onclick="document.getElementById(\'chatArea\').style.display=\'block\';document.getElementById(\'chatInput\').focus()">Ställ en fråga</button>'
-          +'<button class="fb-btn fb-btn-next" onclick="if(mode===\'extra\'&&curQ.extraId)markTaskComplete(curQ.extraId);loadQ()">Nästa uppgift →</button>'
-          +'</div>'
-      )
-      +'<div id="hintFromBtn" style="display:none"></div>'
-      +'</div>';
+          +chat+nxt+'</div>';
+      return '<div class="fb '+(ok?'ok':'bad')+'">'  
+        +'<div class="fb-head"><span class="fb-icon">'+(ok?'✅':'❌')+'</span>'
+        +'<span class="fb-title">'+(ok?'Rätt svar!':'Fel svar')+'</span></div>'
+        +'<div class="fb-short">'+esc(fb.shortFeedback||'')+'</div>'
+        +btns
+        +'<div id="hintFromBtn" style="display:none"></div>'
+        +'</div>';
+    })();
     updateProg();if(session.total>=3)showSes();
   }catch(e){
     document.getElementById('fbArea').innerHTML='<div class="fb bad"><div class="fb-short">⚠️ '+esc(e.message)+'</div>'
