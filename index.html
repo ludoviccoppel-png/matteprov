@@ -518,7 +518,7 @@ function startPracticeExtra(){
       <div class="split-left" id="splitLeft">
         ${task.img
           ? `<div class="page-wrap"><img src="${task.img}" alt="${task.title}" style="width:100%;display:block"></div>`
-          : `<div class="page-wrap-text" style="background:#fff;padding:24px 28px;border-radius:14px;border:2px solid rgba(255,255,255,0.14);font-size:1rem;line-height:1.85;color:#111;white-space:pre-wrap">${(task.text||'').replace(/`/g,'\`')}</div>`
+          : '<div id="extraTextPanel" class="page-wrap-text" style="background:#fff;padding:24px 28px;border-radius:14px;border:2px solid rgba(255,255,255,0.14);font-size:1rem;line-height:1.85;color:#111;white-space:pre-wrap"></div>'
         }
       </div>
       <div class="split-right" id="splitRight">
@@ -544,6 +544,12 @@ function startPracticeExtra(){
         </div>
       </div>
     </div>`;
+
+  // Set text content safely (avoids backtick issues in template literals)
+  if(!task.img){
+    const panel = document.getElementById('extraTextPanel');
+    if(panel) panel.textContent = task.text || '';
+  }
 
   // Set curQ context for sendChat
   curQ = {n: task.title, y: '', d: 'extra', extraId: task.id, img: null, img2: null, img3: null, b64: task.b64key ? EXTRA_B64[task.b64key] : null, text: task.text||'', ak: '', sub: '', sub_txt: ''};
@@ -754,7 +760,8 @@ async function checkAns(){
       +'\nElevens svar: '+ans
       +'\nJSON: {"correct":true/false,"shortFeedback":"1-2 meningar","explanation":"steg-for-steg","correctAnswer":"facit","tipForNext":"tips"}'});
 
-    const messages=[{role:'user',content:content.length>1?content:content[0].text||content}];
+    // Always send as array of content parts (works for both text-only and image+text)
+    const messages=[{role:'user',content:content}];
     const raw=await callClaude(messages,sys);
     const fb=parseJSON(raw);const ok=fb.correct===true;
     if(ok)session.correct++;
@@ -824,12 +831,13 @@ async function sendChat(){
     if(mode==='extra' && !curQ.b64) contextContent=[];
     contextContent.push({type:'text', text:ctxForChat});
 
-    // Multi-turn messages
-    const messages=[
-      {role:'user',content:contextContent},
-      ...chatHistory.slice(0,-1).map(m=>({role:m.role,content:m.content})),
-      {role:'user',content:msg}
-    ];
+    // Multi-turn messages - ensure all content is properly formatted
+    const messages=[];
+    messages.push({role:'user',content:contextContent});
+    for(const m of chatHistory.slice(0,-1)){
+      messages.push({role:m.role, content:[{type:'text',text:String(m.content)}]});
+    }
+    messages.push({role:'user',content:[{type:'text',text:msg}]});
 
     const reply=await callClaude(messages,sys);
     chatHistory.push({role:'assistant',content:reply});
