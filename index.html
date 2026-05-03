@@ -738,9 +738,10 @@ async function checkAns(){
   const btn=document.getElementById('btnCheck');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Bedömer…';
 
-  const sys = mode==='extra'
-    ? 'Du är en rättvis matematiklärare. Eleven arbetar med en extra uppgift. Du känner till hela uppgiften och ska bedöma om svaret är korrekt. Svara ALLTID med JSON och inget annat. Ingen markdown.'
-    : 'Du är en rättvis matematiklärare som bedömer svar på NP åk 9 ('+curQ.y+', Delprov '+curQ.d+'). Svara ALLTID med JSON och inget annat. Ingen markdown.';
+  const sys = 'Du är en matematiklärare. Bedöm elevens svar. '
+    + 'VIKTIGT: Svara ENBART med ett JSON-objekt. Inga andra ord. Inget före eller efter JSON. '
+    + 'Format: {"correct":true,"shortFeedback":"Din feedback här"} '
+    + 'eller {"correct":false,"shortFeedback":"Din feedback här"}';
   const subInfo=curQ.sub?'\n\nDelfråga '+curQ.sub+(curQ.sub_txt?' ('+curQ.sub_txt+')':'')+'.\n':'\n\nUppgift '+curQ.n+'.\n';
   const akInfo=curQ.ak?'\n\nBedömningsanvisning:\n'+curQ.ak+'\n\nVIKTIGT: Basera bedömningen ENBART på bedömningsanvisningen.':'';
 
@@ -937,7 +938,17 @@ function showDone(msg){
   if(area)area.innerHTML='<div class="fb ok" style="margin-top:0"><div class="fb-short">'+esc(msg)+'</div>'
     +'<button class="next-btn" onclick="goHome()">Välj nytt</button></div>';
 }
-function parseJSON(r){return JSON.parse(r.replace(/```json|```/g,'').trim());}
+function parseJSON(r){
+  // Try direct parse first
+  try{ return JSON.parse(r.replace(/```json|```/g,'').trim()); }catch(e){}
+  // Try to extract JSON object from response
+  const m = r.match(/\{[^{}]*"correct"[^{}]*\}/);
+  if(m){ try{ return JSON.parse(m[0]); }catch(e){} }
+  // Fallback: detect correct/incorrect from text
+  const txt = r.toLowerCase();
+  const correct = txt.includes('rätt') || txt.includes('korrekt') || txt.includes('"correct":true') || txt.includes('correct: true');
+  return {correct: correct, shortFeedback: r.substring(0,200)};
+}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function renderHistory(){
   const list=document.getElementById('histList'),sub=document.getElementById('histSub'),hs=document.getElementById('histStats');
