@@ -741,21 +741,23 @@ async function checkAns(){
         ? (curQ.b64 ? [{type:'b64',data:curQ.b64}] : [])
         : [curQ.img,curQ.img2,curQ.img3].filter(Boolean).map(f=>({type:'file',data:f}));
 
-    let content=[];
-    for(const img of imgFiles){
-      const b64=img.type==='b64'?img.data:await fetchB64('images/'+img.data);
-      content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}});
-    }
-    if(!content.length) content=[];
-
     const pageCtxText = mode==='extra'&&curQ.text ? 'Uppgift:\n'+curQ.text : 'Provsida NP '+curQ.y+' Delprov '+curQ.d+'.';
-    if(imgFiles.length===0 && mode==='extra') content=[]; // no images for text-only extra tasks
-    content.push({type:'text',text:pageCtxText+subInfo+akInfo
-      +'\nElevens svar: '+ans
-      +'\nJSON: {"correct":true/false,"shortFeedback":"1-2 meningar","explanation":"steg-for-steg","correctAnswer":"facit","tipForNext":"tips"}'});
+    const jsonPrompt = '\nElevens svar: '+ans+'\nSvara med JSON (inget annat): {"correct":true,"shortFeedback":"..."} eller {"correct":false,"shortFeedback":"..."}';
+    const fullText = pageCtxText+subInfo+akInfo+jsonPrompt;
 
-    // Always send as array of content parts (works for both text-only and image+text)
-    const messages=[{role:'user',content:content}];
+    let messages;
+    if(imgFiles.length>0){
+      const content=[];
+      for(const img of imgFiles){
+        const b64=img.type==='b64'?img.data:await fetchB64('images/'+img.data);
+        content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}});
+      }
+      content.push({type:'text',text:fullText});
+      messages=[{role:'user',content:content}];
+    } else {
+      // Text-only: send as plain string (simpler, more reliable)
+      messages=[{role:'user',content:fullText}];
+    }
     const raw=await callClaude(messages,sys);
     const fb=parseJSON(raw);const ok=fb.correct===true;
     if(ok)session.correct++;
