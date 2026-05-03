@@ -155,6 +155,18 @@ textarea.ans-input:disabled{opacity:.5}
 .empty{text-align:center;padding:50px 0;color:var(--muted)}
 .e-icon{font-size:2.2rem;margin-bottom:10px}
 @media(max-width:560px){.topic-grid{grid-template-columns:repeat(2,1fr)}}
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:28px}
+.extra-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:13px;
+  padding:14px 13px;cursor:pointer;transition:all .2s;text-align:center;user-select:none;position:relative;overflow:hidden}
+.extra-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.extra-card.sel{border-color:#7B68EE!important;background:rgba(123,104,238,.07)}
+.extra-card img{width:100%;height:90px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block}
+.extra-card .e-title{font-size:.8rem;font-weight:600}
+.extra-card .e-sub{font-size:.66rem;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px}
+.extra-card .e-check{position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;
+  background:#7B68EE;display:flex;align-items:center;justify-content:center;
+  font-size:.52rem;color:#fff;opacity:0;transition:all .2s;transform:scale(.5)}
+.extra-card.sel .e-check{opacity:1;transform:scale(1)}
 
 .divider{display:flex;align-items:center;gap:12px;margin:32px 0 20px;color:var(--muted);font-size:.78rem;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -215,6 +227,18 @@ textarea.ans-input:disabled{opacity:.5}
   .split-right{position:static;max-height:none}
 }
 @media(max-width:560px){.topic-grid{grid-template-columns:repeat(2,1fr)}}
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:28px}
+.extra-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:13px;
+  padding:14px 13px;cursor:pointer;transition:all .2s;text-align:center;user-select:none;position:relative;overflow:hidden}
+.extra-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.extra-card.sel{border-color:#7B68EE!important;background:rgba(123,104,238,.07)}
+.extra-card img{width:100%;height:90px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block}
+.extra-card .e-title{font-size:.8rem;font-weight:600}
+.extra-card .e-sub{font-size:.66rem;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px}
+.extra-card .e-check{position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;
+  background:#7B68EE;display:flex;align-items:center;justify-content:center;
+  font-size:.52rem;color:#fff;opacity:0;transition:all .2s;transform:scale(.5)}
+.extra-card.sel .e-check{opacity:1;transform:scale(1)}
 </style>
 </head>
 <body>
@@ -243,6 +267,17 @@ textarea.ans-input:disabled{opacity:.5}
   <div class="divider fade-up" style="animation-delay:.26s">eller välj ett helt delprov C</div>
   <div class="c-grid fade-up" style="animation-delay:.30s" id="cGrid"></div>
   <button class="start-btn fade-up" id="startBtnC" style="animation-delay:.34s;background:#8B6914" disabled onclick="startPracticeC()">Starta Delprov C →</button>
+
+  <div class="divider fade-up" style="animation-delay:.38s">eller extra uppgifter nivå C–A</div>
+  <div class="extra-grid fade-up" style="animation-delay:.42s" id="extraGrid">
+    <!-- Lägg till extra uppgifter här - se instruktioner nedan -->
+    <div class="extra-card" style="opacity:.4;pointer-events:none;border-style:dashed">
+      <div style="font-size:2rem;margin-bottom:8px">📎</div>
+      <div class="e-title">Inga uppgifter ännu</div>
+      <div class="e-sub">Lägg till bilder i extra/</div>
+    </div>
+  </div>
+  <button class="start-btn fade-up" id="startBtnExtra" style="animation-delay:.46s;background:#4A3D9A" disabled onclick="startPracticeExtra()">Starta extra uppgifter →</button>
 </div>
 </div>
 <div class="screen" id="screenPractice">
@@ -326,6 +361,7 @@ function initHome(){
   }).join('');
 }
 initHome();
+initExtraGrid();
 
 function renderLevels(){
   document.getElementById('levelRow').innerHTML=LEVELS.map(l=>{
@@ -364,6 +400,91 @@ function checkStart(){
   document.getElementById('startBtnAE').disabled=!(selTopic&&selLevel&&countQs(selTopic,selLevel)>0);
   document.getElementById('startBtnC').disabled=!selCYear;
 }
+/* ══ EXTRA TASKS ══════════════════════════════════════════════════════════ */
+// INSTRUKTIONER: Lägg till bilder i en mapp "extra/" i ditt GitHub-repo.
+// Namnge dem: extra_01.jpg, extra_02.jpg, extra_03.jpg osv.
+// Uppdatera listan EXTRA_TASKS nedan med titel och bildnamn.
+const EXTRA_TASKS = [
+  {id:'e1', title:'Pooler',         sub:'Likformighet · Nivå C-A', img:'extra/extra_01.jpg'},
+  {id:'e2', title:'Beräkna sidan x',sub:'Pythagoras · Nivå C-A',   img:'extra/extra_02.jpg'},
+  {id:'e3', title:'Vaxkakor',       sub:'Geometri · Nivå C-A',     img:'extra/extra_03.jpg'},
+  {id:'e4', title:'Sverigekarta',   sub:'Skala · Nivå C',          img:'extra/extra_04.jpg'},
+  {id:'e5', title:'Parfymflaskor',  sub:'Likformighet · Nivå C-A', img:'extra/extra_05.jpg'},
+];
+
+let selExtra = null;
+
+function initExtraGrid(){
+  const grid = document.getElementById('extraGrid');
+  if(EXTRA_TASKS.length === 0) return; // keep placeholder
+  grid.innerHTML = EXTRA_TASKS.map(t => `
+    <div class="extra-card" id="ec-${t.id}" onclick="selectExtra('${t.id}')">
+      <img src="${t.img}" alt="${t.title}" onerror="this.style.display='none'">
+      <div class="e-title">${t.title}</div>
+      <div class="e-sub">${t.sub}</div>
+      <div class="e-check">✓</div>
+    </div>`).join('');
+}
+
+function selectExtra(id){
+  selExtra = id;
+  selCYear = null; selTopic = null; selLevel = null;
+  document.querySelectorAll('.extra-card').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.c-card,.topic-card,.level-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('ec-'+id)?.classList.add('sel');
+  document.getElementById('startBtnExtra').disabled = false;
+  document.getElementById('startBtnC').disabled = true;
+  document.getElementById('startBtnAE').disabled = true;
+}
+
+function startPracticeExtra(){
+  if(!selExtra) return;
+  const task = EXTRA_TASKS.find(t=>t.id===selExtra);
+  if(!task) return;
+  mode = 'extra';
+  session = {correct:0, total:0}; chatHistory = [];
+  document.getElementById('sesStats')?.style && (document.getElementById('sesStats').style.display='none');
+
+  // Show in split layout with image on left, chat on right
+  const pscreen = document.getElementById('screenPractice');
+  pscreen.innerHTML = `
+    <div class="split-layout" id="splitLayout">
+      <div class="split-left" id="splitLeft">
+        <div class="page-wrap">
+          <img src="${task.img}" alt="${task.title}" style="width:100%;display:block">
+        </div>
+      </div>
+      <div class="split-right" id="splitRight">
+        <div class="p-topbar">
+          <div class="badges">
+            <span class="badge" style="border-color:#7B68EE;color:#7B68EE">${task.title} · ${task.sub}</span>
+          </div>
+        </div>
+        <div id="practiceArea">
+          <div class="q-banner">
+            <div class="q-banner-label">Extra uppgift</div>
+            <div class="q-banner-main">${task.title}</div>
+            <div class="q-banner-meta">${task.sub}</div>
+          </div>
+        </div>
+        <div class="chat-area" id="chatArea" style="display:block">
+          <div class="chat-history" id="chatHistory"></div>
+          <div class="chat-input-row">
+            <input class="chat-input" id="chatInput" placeholder="Skriv ditt svar eller ställ en fråga…"
+              onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" id="chatSend" onclick="sendChat()">Skicka</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  // Set curQ context for sendChat
+  curQ = {n: task.title, y: '', d: 'extra', img: task.img, img2: null, img3: null, ak: '', sub: '', sub_txt: ''};
+
+  showScreen('Practice');
+  document.getElementById('chatInput')?.focus();
+}
+
 function showScreen(n){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen'+n).classList.add('active');
