@@ -738,10 +738,11 @@ async function checkAns(){
   const btn=document.getElementById('btnCheck');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Bedömer…';
 
-  const sys = 'Du är en matematiklärare. Bedöm elevens svar. '
-    + 'VIKTIGT: Svara ENBART med ett JSON-objekt. Inga andra ord. Inget före eller efter JSON. '
-    + 'Format: {"correct":true,"shortFeedback":"Din feedback här"} '
-    + 'eller {"correct":false,"shortFeedback":"Din feedback här"}';
+  const sys = 'Du är en matematiklärare som bedömer elevens svar. '
+    + 'REGEL 1: Svara ALLTID med exakt ett JSON-objekt, ingenting annat. '
+    + 'REGEL 2: Fråga ALDRIG efter mer information. Bedöm svaret som det är. '
+    + 'REGEL 3: Om svaret är ofullständigt, säg det i shortFeedback men sätt correct:false. '
+    + 'FORMAT: {"correct":true,"shortFeedback":"text"} eller {"correct":false,"shortFeedback":"text"}';
   const subInfo=curQ.sub?'\n\nDelfråga '+curQ.sub+(curQ.sub_txt?' ('+curQ.sub_txt+')':'')+'.\n':'\n\nUppgift '+curQ.n+'.\n';
   const akInfo=curQ.ak?'\n\nBedömningsanvisning:\n'+curQ.ak+'\n\nVIKTIGT: Basera bedömningen ENBART på bedömningsanvisningen.':'';
 
@@ -752,9 +753,13 @@ async function checkAns(){
         ? (curQ.b64 ? [{type:'b64',data:curQ.b64}] : [])
         : [curQ.img,curQ.img2,curQ.img3].filter(Boolean).map(f=>({type:'file',data:f}));
 
-    const pageCtxText = mode==='extra'&&curQ.text ? 'Uppgift:\n'+curQ.text : 'Provsida NP '+curQ.y+' Delprov '+curQ.d+'.';
-    const jsonPrompt = '\nElevens svar: '+ans+'\nSvara med JSON (inget annat): {"correct":true,"shortFeedback":"..."} eller {"correct":false,"shortFeedback":"..."}';
-    const fullText = pageCtxText+subInfo+akInfo+jsonPrompt;
+    const pageCtxText = mode==='extra'&&curQ.text
+      ? 'UPPGIFT (hela texten):\n'+curQ.text
+      : 'Provsida NP '+curQ.y+' Delprov '+curQ.d+'.';
+    const fullText = pageCtxText+subInfo+akInfo
+      +'\n\nELEVENS SVAR: '+ans
+      +'\n\nBedöm svaret ovan. Fråga INTE efter mer information. Svara DIREKT med JSON:'
+      +'\n{"correct":true,"shortFeedback":"feedback"} eller {"correct":false,"shortFeedback":"feedback"}';
 
     let messages;
     if(imgFiles.length>0){
