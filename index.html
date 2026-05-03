@@ -360,8 +360,11 @@ function initHome(){
       <div class="c-check">✓</div></div>`;
   }).join('');
 }
-initHome();
-initExtraGrid();
+// Init after DOM ready
+document.addEventListener('DOMContentLoaded', function(){
+  initHome();
+  initExtraGrid();
+});
 
 function renderLevels(){
   document.getElementById('levelRow').innerHTML=LEVELS.map(l=>{
