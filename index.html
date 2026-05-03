@@ -525,11 +525,21 @@ function startPracticeExtra(){
             <div class="q-banner-main">${task.title}</div>
             <div class="q-banner-meta">${task.sub}</div>
           </div>
+          <div class="ans-wrap">
+            <textarea class="ans-input" id="ansInput" placeholder="Skriv ditt svar här…" rows="3"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();checkAns();}"></textarea>
+          </div>
+          <div class="act-row">
+            <button class="btn-check" id="btnCheck" onclick="checkAns()">Kontrollera svar</button>
+            <button class="btn-sm" onclick="getHint()">💡 Ledtråd</button>
+          </div>
+          <div id="hintArea"></div>
+          <div id="fbArea"></div>
         </div>
-        <div class="chat-area" id="chatArea" style="display:block">
+        <div class="chat-area" id="chatArea" style="display:none">
           <div class="chat-history" id="chatHistory"></div>
           <div class="chat-input-row">
-            <input class="chat-input" id="chatInput" placeholder="Skriv ditt svar eller ställ en fråga…"
+            <input class="chat-input" id="chatInput" placeholder="Skriv en följdfråga…"
               onkeydown="if(event.key==='Enter')sendChat()">
             <button class="chat-send" id="chatSend" onclick="sendChat()">Skicka</button>
           </div>
@@ -546,7 +556,7 @@ function startPracticeExtra(){
   // Set task text safely after DOM is ready
   const textPanel = document.getElementById('extraTextPanel');
   if(textPanel) textPanel.textContent = task.text || '';
-  document.getElementById('chatInput')?.focus();
+  document.getElementById('ansInput')?.focus();
 }
 
 function showScreen(n){
