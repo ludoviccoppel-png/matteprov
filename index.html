@@ -875,11 +875,7 @@ function renderChatHistory(){
 
 /* ══ HINT ═════════════════════════════════════════════════════════════════ */
 function showHint(){
-  const hintDiv = document.getElementById('hintFromBtn');
-  if(!hintDiv) return;
-  hintDiv.style.display='block';
-  hintDiv.innerHTML='<div class="hint-box"><div class="hint-lbl">💡 Tips</div><div class="skel" style="height:13px;width:65%;margin-top:4px"></div></div>';
-  getHintInto(hintDiv);
+  getHint(); // reuse getHint which now handles both hintArea and hintFromBtn
 }
 function tryAgain(){
   // Re-enable the answer input and check button
@@ -893,25 +889,35 @@ function tryAgain(){
 
 async function getHint(){
   if(loading)return;
-  const ha=document.getElementById('hintArea');
+  // Determine target element - hintArea for normal mode, hintFromBtn for feedback hints
+  const ha=document.getElementById('hintArea')||document.getElementById('hintFromBtn');
+  if(!ha)return;
+  ha.style.display='block';
   ha.innerHTML='<div class="hint-box"><div class="hint-lbl">💡 Ledtråd</div><div class="skel" style="height:13px;width:65%;margin-top:4px"></div></div>';
   loading=true;
   const sub=curQ.sub?' Delfråga '+curQ.sub+(curQ.sub_txt?': '+curQ.sub_txt:''):'';
+  const extraCtx=mode==='extra'&&curQ.text?'\nUppgift: '+curQ.text:'';
   try{
     const imgFiles=mode==='c'
       ? C_EXAMS[selCYear].pages.map(p=>({type:'b64',data:p.img}))
       : mode==='extra'
-        ? (curQ.b64 ? [{type:'b64',data:curQ.b64}] : [])
+        ? (curQ.b64?[{type:'b64',data:curQ.b64}]:[])
         : [curQ.img,curQ.img2,curQ.img3].filter(Boolean).map(f=>({type:'file',data:f}));
-    const content=[];
-    for(const img of imgFiles){
-      const b64=img.type==='b64'?img.data:await fetchB64('images/'+img.data);
-      content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}});
+    let messages;
+    if(imgFiles.length>0){
+      const content=[];
+      for(const img of imgFiles){
+        const b64=img.type==='b64'?img.data:await fetchB64('images/'+img.data);
+        content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}});
+      }
+      content.push({type:'text',text:extraCtx+'\nGe en kort ledtråd (max 2 meningar) för uppgift '+curQ.n+sub+'. Avslöj INTE svaret.'});
+      messages=[{role:'user',content}];
+    } else {
+      messages=[{role:'user',content:extraCtx+'\nGe en kort ledtråd (max 2 meningar) för uppgift '+curQ.n+sub+'. Avslöj INTE svaret.'}];
     }
-    content.push({type:'text',text:'Ge ledtråd (max 2 meningar) för uppgift '+curQ.n+sub+'. Avslöj INTE svaret.'});
-    const h=await callClaude([{role:'user',content}],'Du är en hjälpsam matematiklärare. Svara på svenska, max 2 meningar. Använd ALDRIG markdown (**, ##, * etc), skriv ren text.');
-    targetEl.innerHTML='<div class="hint-box"><div class="hint-lbl">💡 Ledtråd</div>'+esc(h)+'</div>';
-  }catch(e){targetEl.innerHTML='';}finally{loading=false;}
+    const h=await callClaude(messages,'Du är en hjälpsam matematiklärare. Svara på svenska, max 2 meningar. Skriv ren text utan markdown.');
+    ha.innerHTML='<div class="hint-box"><div class="hint-lbl">💡 Ledtråd</div>'+esc(h)+'</div>';
+  }catch(e){ha.innerHTML='';}finally{loading=false;}
 }
 
 /* ══ UTILS ════════════════════════════════════════════════════════════════ */
