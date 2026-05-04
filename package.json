@@ -1,0 +1,22 @@
+{
+  "name": "matteprov",
+  "version": "1.0.0",
+  "description": "MatteNP - Practice platform for Swedish math exams",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "lint": "echo 'No linting configured'"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "education",
+    "math",
+    "swedish"
+  ],
+  "author": "",
+  "license": "ISC"
+}
