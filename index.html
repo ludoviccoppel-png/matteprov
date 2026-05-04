@@ -888,7 +888,7 @@ function tryAgain(){
   if(inp){inp.disabled=false;inp.value='';inp.focus();}
   if(btn){btn.disabled=false;btn.innerHTML='Kontrollera svar';}
   document.getElementById('fbArea').innerHTML='';
-  document.getElementById('chatArea').style.display='none';
+  const _ca=document.getElementById('chatArea');if(_ca)_ca.style.display='none';
 }
 
 async function getHint(){
@@ -927,16 +927,17 @@ async function callClaude(messages,sys){
 }
 function updateProg(){
   const p=session.total>0?Math.min((session.correct/session.total)*100,100):0;
-  document.getElementById('progFill').style.width=p+'%';
+  const pf=document.getElementById('progFill');
+  if(pf) pf.style.width=p+'%';
   const ns=document.getElementById('navStat');
-  if(session.total>0){ns.style.display='inline';ns.textContent=session.correct+'/'+session.total;}
+  if(session.total>0&&ns){ns.style.display='inline';ns.textContent=session.correct+'/'+session.total;}
 }
 function showSes(){
   const s=document.getElementById('sesStats');if(!s)return;
   s.style.display='block';
-  document.getElementById('sTotal').textContent=session.total;
-  document.getElementById('sCorrect').textContent=session.correct;
-  document.getElementById('sPct').textContent=Math.round((session.correct/session.total)*100)+'%';
+  const st=document.getElementById('sTotal');if(st)st.textContent=session.total;
+  const sc=document.getElementById('sCorrect');if(sc)sc.textContent=session.correct;
+  const sp=document.getElementById('sPct');if(sp)sp.textContent=Math.round((session.correct/session.total)*100)+'%';
 }
 function showDone(msg){
   const area=document.getElementById('practiceArea');
