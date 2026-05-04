@@ -769,12 +769,13 @@ async function checkAns(){
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Bedömer…';
 
   const sys = 'Du är en matematiklärare som bedömer elevens svar. '
-    + 'REGEL 1: Svara ALLTID med exakt ett JSON-objekt, ingenting annat. '
-    + 'REGEL 2: Fråga ALDRIG efter mer information. Bedöm svaret som det är. '
-    + 'REGEL 3: Acceptera ALLTID matematiskt ekvivalenta svar. T.ex. är 5*4*3/6, 5*4*3/(3*2*1), C(5,3) och 10 alla korrekta svar på "hur många kombinationer av 3 ur 5". '
-    + 'REGEL 4: Om eleven skriver ett korrekt uttryck som ger rätt värde, sätt correct:true. '
-    + 'REGEL 5: Basera bedömningen ENBART på matematisk korrekthet, inte på skrivsätt. '
-    + 'FORMAT: {"correct":true,"shortFeedback":"text"} eller {"correct":false,"shortFeedback":"text"}';
+    + 'REGEL 1: Svara med EXAKT ett JSON-objekt. Ingenting annat. Ingen text före eller efter. '
+    + 'REGEL 2: Fråga ALDRIG efter mer information. '
+    + 'REGEL 3: Acceptera alla matematiskt ekvivalenta svar. x+2,5x=180 är samma som 7k=180. 5*4*3/6 är samma som 10. Förenklade och ofullständiga uttryck som leder till rätt svar räknas som rätt. '
+    + 'REGEL 4: Räkna ut om elevens uttryck ger korrekt numeriskt svar. Om ja, sätt correct:true. '
+    + 'REGEL 5: ALDRIG ändra bedömning inom samma svar. Bestäm dig: antingen correct:true eller correct:false. Skriv inte "Jag ändrar bedömningen" eller liknande. '
+    + 'REGEL 6: shortFeedback ska vara 1-2 meningar utan markdown. '
+    + 'FORMAT: {"correct":true,"shortFeedback":"..."} eller {"correct":false,"shortFeedback":"..."}';
   const subInfo=curQ.sub?'\n\nDelfråga '+curQ.sub+(curQ.sub_txt?' ('+curQ.sub_txt+')':'')+'.\n':'\n\nUppgift '+curQ.n+'.\n';
   const akInfo=curQ.ak?'\n\nBedömningsanvisning:\n'+curQ.ak+'\n\nVIKTIGT: Basera bedömningen ENBART på bedömningsanvisningen.':'';
 
@@ -790,8 +791,11 @@ async function checkAns(){
       : 'Provsida NP '+curQ.y+' Delprov '+curQ.d+'.';
     const fullText = pageCtxText+subInfo+akInfo
       +'\n\nELEVENS SVAR: '+ans
-      +'\n\nBedöm svaret ovan. Fråga INTE efter mer information. Svara DIREKT med JSON:'
-      +'\n{"correct":true,"shortFeedback":"feedback"} eller {"correct":false,"shortFeedback":"feedback"}';
+      +'\n\nGör följande INNAN du svarar:'
+      +'\n1. Beräkna eller förenkla elevens svar matematiskt.'
+      +'\n2. Jämför resultatet med rätt svar.'
+      +'\n3. Om elevens uttryck är matematiskt ekvivalent med rätt svar -> correct:true.'
+      +'\nSvara med exakt ett JSON-objekt, inget annat: {"correct":true,"shortFeedback":"..."} eller {"correct":false,"shortFeedback":"..."}';
 
     let messages;
     if(imgFiles.length>0){
