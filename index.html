@@ -438,12 +438,7 @@ function initHome(){
   }).join('');
 }
 // Init after DOM ready
-document.addEventListener('DOMContentLoaded', function(){
-  initHome();
-  initExtraGrid();
-  initEEGrid();
-  loadCompletedTasks();
-});
+// DOMContentLoaded moved to end of script
 
 // ── COMPLETED TASKS (localStorage) ─────────────────────────────────────────
 let completedTasks = new Set();
@@ -1117,6 +1112,13 @@ async function getHint(){
   }catch(e){ha.innerHTML='';}finally{loading=false;}
 }
 
+
+document.addEventListener('DOMContentLoaded', function(){
+  initHome();
+  initExtraGrid();
+  initEEGrid();
+  loadCompletedTasks();
+});
 </script>
 </body>
 </html>
