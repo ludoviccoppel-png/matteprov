@@ -500,7 +500,7 @@ function markTaskComplete(id){
   updateCompletionMarkers();
 }
 function updateCompletionMarkers(){
-  [...EXTRA_TASKS,...EXTRA_EXTRA_TASKS].forEach(t => {
+  [...EXTRA_TASKS,...EXTRA_EXTRA_TASKS].filter(t=>t&&t.id).forEach(t => {
     const card = document.getElementById('ec-'+t.id)||document.getElementById('eec-'+t.id);
     if(!card) return;
     const existing = card.querySelector('.done-badge');
