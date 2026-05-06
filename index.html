@@ -640,7 +640,45 @@ function selectExtra(id){
 
 function renderExtraLayout(task){
   const pscreen=document.getElementById('screenPractice');
-  
+  pscreen.innerHTML = `
+    <div class="split-layout" id="splitLayout">
+      <div class="split-left" id="splitLeft">
+        ${task.b64key && EXTRA_B64[task.b64key] ? `<div class="page-wrap"><img src="data:image/jpeg;base64,${EXTRA_B64[task.b64key]}" alt="${task.title}" style="width:100%;display:block"></div>` : task.img ? `<div class="page-wrap"><img src="${task.img}" alt="${task.title}" style="width:100%;display:block"></div>` : ''}
+        <div id="extraTextPanel" class="page-wrap-text" style="background:#fff;padding:24px 28px;border-radius:14px;border:2px solid rgba(255,255,255,0.14);font-size:1rem;line-height:1.85;color:#111;white-space:pre-wrap;margin-top:${(task.b64key||task.img)?'8px':'0'}"></div>
+      </div>
+      <div class="split-right" id="splitRight">
+        <div class="p-topbar">
+          <div class="badges">
+            <span class="badge" style="border-color:#7B68EE;color:#7B68EE">${task.title} · ${task.sub}</span>
+          </div>
+        </div>
+        <div id="practiceArea">
+          <div class="q-banner">
+            <div class="q-banner-label">Extra uppgift</div>
+            <div class="q-banner-main">${task.title}</div>
+            <div class="q-banner-meta">${task.sub}</div>
+          </div>
+          <div class="ans-wrap">
+            <textarea class="ans-input" id="ansInput" placeholder="Skriv ditt svar här…" rows="3"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();checkAns();}"></textarea>
+          </div>
+          <div class="act-row">
+            <button class="btn-check" id="btnCheck" onclick="checkAns()">Kontrollera svar</button>
+            <button class="btn-sm" onclick="getHint()">💡 Ledtråd</button>
+          </div>
+          <div id="hintArea"></div>
+          <div id="fbArea"></div>
+        </div>
+        <div class="chat-area" id="chatArea" style="display:none">
+          <div class="chat-history" id="chatHistory"></div>
+          <div class="chat-input-row">
+            <input class="chat-input" id="chatInput" placeholder="Skriv en följdfråga…"
+              onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" id="chatSend" onclick="sendChat()">Skicka</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
 }
 
 function startPracticeExtra(){
