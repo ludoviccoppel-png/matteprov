@@ -623,6 +623,7 @@ const EXTRA_TASKS = [
 let selExtraType = 'extra';
 
 function initExtraGrid(){
+  console.log('initExtraGrid called, EXTRA_TASKS.length=',EXTRA_TASKS.length);
   const grid = document.getElementById('extraGrid');
   if(EXTRA_TASKS.length === 0) return; // keep placeholder
   grid.innerHTML = EXTRA_TASKS.map(t => `
@@ -635,6 +636,7 @@ function initExtraGrid(){
 }
 
 function selectExtra(id){
+  console.log('selectExtra called with id=',id);
   selExtra = id;
   selCYear = null; selTopic = null; selLevel = null;
   document.querySelectorAll('.extra-card').forEach(c=>c.classList.remove('sel'));
@@ -646,10 +648,13 @@ function selectExtra(id){
 }
 
 function startPracticeExtra(){
+  console.log('startPracticeExtra called, selExtra=',selExtra,'EXTRA_TASKS.length=',EXTRA_TASKS.length);
   if(!selExtra) return;
-  const task = EXTRA_TASKS.find(t=>t.id===selExtra);
+  // Search in EXTRA_TASKS, fall back to EXTRA_EXTRA_TASKS
+  const task = EXTRA_TASKS.find(t=>t.id===selExtra) || EXTRA_EXTRA_TASKS.find(t=>t.id===selExtra);
+  console.log('task found:', task?.title);
   if(!task) return;
-  mode = 'extra';
+  mode = task.id.startsWith('ee') ? 'ee' : 'extra';
   session = {correct:0, total:0}; chatHistory = [];
   
     document.getElementById('sesStats')?.style && (document.getElementById('sesStats').style.display='none');
@@ -1128,6 +1133,7 @@ function renderHistory(){
 
 
 document.addEventListener('DOMContentLoaded', function(){
+  console.log('DOMContentLoaded fired');
   initHome();
   initExtraGrid();
   initEEGrid();
