@@ -153,6 +153,25 @@ textarea.ans-input:disabled{opacity:.5}
 .fb-btn:hover{border-color:var(--teal);color:var(--teal)}
 .fb-btn-next{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
 .fb-btn-next:hover{background:#FF8150;border-color:#FF8150;color:#fff}
+.search-wrap{position:relative;margin-bottom:18px}
+.search-input{width:100%;box-sizing:border-box;padding:11px 16px 11px 40px;
+  border-radius:12px;border:1.5px solid var(--border);background:var(--bg2);
+  color:var(--text);font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border .2s}
+.search-input:focus{border-color:var(--teal)}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:.95rem;pointer-events:none}
+.search-results{display:none;margin-top:8px}
+.search-results.active{display:block}
+.sr-section{margin-bottom:14px}
+.sr-section-title{font-size:.7rem;font-family:'DM Mono',monospace;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.sr-item{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 14px;cursor:pointer;transition:all .2s;margin-bottom:5px}
+.sr-item:hover{border-color:var(--teal);background:var(--bg3)}
+.sr-item-title{font-size:.85rem;font-weight:600}
+.sr-item-meta{font-size:.72rem;color:var(--muted);margin-top:2px}
+.sr-item mark{background:rgba(78,205,196,.25);color:inherit;border-radius:3px;padding:0 2px}
+.sr-empty{color:var(--muted);font-size:.85rem;text-align:center;padding:20px}
 .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.2);
   border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;
   display:inline-block;vertical-align:middle;margin-right:5px}
@@ -265,6 +284,14 @@ textarea.ans-input:disabled{opacity:.5}
     <h1>Träna på <em>riktiga</em><br>NP-uppgifter</h1>
     <p>Välj ämnesområde och betygsnivå — eller träna på ett helt Delprov C med alla sidor bredvid frågorna.</p>
   </div>
+  <div class="search-wrap fade-up" style="animation-delay:.03s">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput" type="text"
+      placeholder="Sök uppgift, t.ex. rotationssymmetri eller choklad"
+      oninput="doSearch(this.value)">
+  </div>
+  <div class="search-results" id="searchResults"></div>
+
   <div class="sec-label fade-up" style="animation-delay:.06s"><strong>Ämnesområde</strong></div>
   <div class="topic-grid fade-up" style="animation-delay:.10s" id="topicGrid"></div>
   <div class="sec-label fade-up" style="animation-delay:.14s"><strong>Betygsnivå</strong></div>
@@ -1136,6 +1163,135 @@ function renderHistory(){
     (h.correct?'✓':'✗')+'</div></div>').join('');
 }
 
+
+
+// ── SEARCH ──────────────────────────────────────────────────────────────────
+function doSearch(query){
+  const q = query.trim().toLowerCase();
+  const res = document.getElementById('searchResults');
+  if(!q){ res.className='search-results'; res.innerHTML=''; return; }
+
+  function highlight(text, q){
+    if(!text) return '';
+    const idx = text.toLowerCase().indexOf(q);
+    if(idx<0) return esc(text.substring(0,80));
+    const start = Math.max(0,idx-30);
+    const prefix = start>0?'…':'';
+    const snippet = text.substring(start, Math.min(text.length, idx-start+q.length+60+start));
+    return esc(prefix+snippet).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),
+      m=>'<mark>'+m+'</mark>');
+  }
+
+  // Search NP questions
+  const npHits = QS.filter(q2 => {
+    const haystack = (q2.main+' '+q2.sub_txt+' '+q2.t+' '+q2.y+' '+q2.d).toLowerCase();
+    return haystack.includes(q);
+  }).slice(0,8);
+
+  // Search extra tasks
+  const exHits = [...EXTRA_TASKS,...EXTRA_EXTRA_TASKS].filter(t=>t&&t.id).filter(t=>{
+    const haystack = (t.title+' '+t.sub+' '+(t.text||'')).toLowerCase();
+    return haystack.includes(q);
+  }).slice(0,6);
+
+  if(!npHits.length && !exHits.length){
+    res.innerHTML='<div class="sr-empty">Inga uppgifter hittades för "'+esc(query)+'"</div>';
+    res.className='search-results active'; return;
+  }
+
+  let html2='';
+  if(npHits.length){
+    html2+='<div class="sr-section"><div class="sr-section-title">NP-uppgifter ('+npHits.length+')</div>';
+    html2+=npHits.map(q2=>`
+      <div class="sr-item" onclick="jumpToNP('${q2.t}','${q2.l}','${q2.id}')">
+        <div class="sr-item-title">${esc('Uppgift '+q2.n+' — NP '+q2.y+' Delprov '+q2.d)}</div>
+        <div class="sr-item-meta">${highlight(q2.main,q)}</div>
+      </div>`).join('');
+    html2+='</div>';
+  }
+  if(exHits.length){
+    html2+='<div class="sr-section"><div class="sr-section-title">Extra uppgifter ('+exHits.length+')</div>';
+    html2+=exHits.map(t=>`
+      <div class="sr-item" onclick="jumpToExtra('${t.id}')">
+        <div class="sr-item-title">${esc(t.title)}</div>
+        <div class="sr-item-meta">${esc(t.sub)} — ${highlight(t.text||'',q)}</div>
+      </div>`).join('');
+    html2+='</div>';
+  }
+  res.innerHTML=html2;
+  res.className='search-results active';
+}
+
+function jumpToNP(topic, level, id){
+  // Select topic+level and load the specific question
+  document.getElementById('searchInput').value='';
+  doSearch('');
+  selTopic=topic; selLevel=level; selCYear=null;
+  mode='ae'; session={correct:0,total:0}; usedIds.clear(); questionQueue=[];
+  document.getElementById('sesStats').style.display='none';
+  const tp=TOPICS.find(t=>t.id===topic)||{label:topic};
+  const lv=LEVELS.find(l=>l.id===level)||{name:level};
+  document.getElementById('badgeRow').innerHTML=
+    '<span class="badge acc">'+tp.label+'</span><span class="badge lv-'+level+'">'+lv.name+'</span>';
+  showScreen('Practice');
+  // Load the specific question first
+  const q=QS.find(q2=>q2.id===parseInt(id));
+  if(q){ usedIds.add(q.id); renderQ(q); }
+  else loadQ();
+}
+
+function jumpToExtra(id){
+  document.getElementById('searchInput').value='';
+  doSearch('');
+  const task=[...EXTRA_TASKS,...EXTRA_EXTRA_TASKS].filter(t=>t&&t.id).find(t=>t.id===id);
+  if(!task) return;
+  mode=id.startsWith('ee')?'ee':'extra';
+  session={correct:0,total:0}; chatHistory=[];
+  markTaskComplete(id);
+  curQ={n:task.title,y:'',d:mode,extraId:id,img:null,img2:null,img3:null,
+    b64:task.b64key?EXTRA_B64[task.b64key]:null,text:task.text||'',ak:'',sub:'',sub_txt:''};
+  const pscreen=document.getElementById('screenPractice');
+  const imgHtml=task.b64key&&EXTRA_B64[task.b64key]
+    ?`<div class="page-wrap"><img src="data:image/jpeg;base64,${EXTRA_B64[task.b64key]}" style="width:100%;display:block"></div>`:'';
+  pscreen.innerHTML=`
+    <div class="split-layout" id="splitLayout">
+      <div class="split-left" id="splitLeft">
+        ${imgHtml}
+        <div id="extraTextPanel" class="page-wrap-text" style="background:#fff;padding:24px 28px;border-radius:14px;border:2px solid rgba(255,255,255,0.14);font-size:1rem;line-height:1.85;color:#111;white-space:pre-wrap;margin-top:${imgHtml?'8px':'0'}"></div>
+      </div>
+      <div class="split-right" id="splitRight">
+        <div class="p-topbar"><div class="badges"><span class="badge" style="border-color:#7B68EE;color:#7B68EE">${task.title} · ${task.sub}</span></div></div>
+        <div id="practiceArea">
+          <div class="q-banner">
+            <div class="q-banner-label">Extra uppgift</div>
+            <div class="q-banner-main">${task.title}</div>
+            <div class="q-banner-meta">${task.sub}</div>
+          </div>
+          <div class="ans-wrap">
+            <textarea class="ans-input" id="ansInput" placeholder="Skriv ditt svar här…" rows="3"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();checkAns();}"></textarea>
+          </div>
+          <div class="act-row">
+            <button class="btn-check" id="btnCheck" onclick="checkAns()">Kontrollera svar</button>
+            <button class="btn-sm" onclick="getHint()">💡 Ledtråd</button>
+          </div>
+          <div id="hintArea"></div>
+          <div id="fbArea"></div>
+        </div>
+        <div class="chat-area" id="chatArea" style="display:none">
+          <div class="chat-history" id="chatHistory"></div>
+          <div class="chat-input-row">
+            <input class="chat-input" id="chatInput" placeholder="Skriv en följdfråga…" onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" id="chatSend" onclick="sendChat()">Skicka</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  showScreen('Practice');
+  const tp=document.getElementById('extraTextPanel');
+  if(tp) tp.textContent=task.text||'';
+  document.getElementById('ansInput')?.focus();
+}
 
 document.addEventListener('DOMContentLoaded', function(){
   console.log('DOMContentLoaded fired');
