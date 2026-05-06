@@ -917,7 +917,7 @@ async function checkAns(){
   if(!ans||loading)return;
   loading=true;
   const btn=document.getElementById('btnCheck');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Bedömer…';
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Bedömer…';}
 
   const sys = 'Du är en matematiklärare som bedömer elevens svar. '
     + 'REGEL 1: Svara med EXAKT ett JSON-objekt. Ingenting annat. Ingen text före eller efter. '
@@ -996,8 +996,12 @@ async function checkAns(){
     updateProg();if(session.total>=3)showSes();
   }catch(e){
     document.getElementById('fbArea').innerHTML='<div class="fb bad"><div class="fb-short">⚠️ '+esc(e.message)+'</div>'
-      +'<button class="next-btn" onclick="loadQ()">Försök igen</button></div>';
-  }finally{loading=false;}
+      +'<button class="fb-btn" onclick="tryAgain()">Försök igen</button></div>';
+  }finally{
+    loading=false;
+    const _fb=document.getElementById('btnCheck');
+    if(_fb){_fb.disabled=false;_fb.innerHTML='Kontrollera svar';}
+  }
 }
 
 /* ══ FOLLOW-UP CHAT ═══════════════════════════════════════════════════════ */
