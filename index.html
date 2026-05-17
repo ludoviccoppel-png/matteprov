@@ -947,6 +947,66 @@ const Y7_EXAMS = {
        ledtråd:'Vinkelsumman i en fyrhörning är 360°.'},
     ]
   }
+prov4: {
+    title: 'Prov 4 — VT25',
+    date: '2025-05-15',
+    desc: 'Tal & Aritmetik · Algebra · Geometri · Procent · Problemlösning',
+    questions: [
+      // Del 1 - Utan miniräknare (Uppgift 1-14)
+      {id:'p4_1a', n:'1a', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Beräkna: 13,9 − 1,65', facit:'12,25', lös:'13,90 − 1,65 = 12,25 [cite: 1]', ledtråd:'Ställ upp med kommatecknen under varandra.'},
+      {id:'p4_1b', n:'1b', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Beräkna: 2,3 · 0,4', facit:'0,92', lös:'23 · 4 = 92. Två decimaler ger 0,92 [cite: 1]', ledtråd:'Multiplicera som heltal först.'},
+      {id:'p4_1c', n:'1c', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Beräkna: 5 / 0,001', facit:'5000', lös:'Att dela med en tusendel är samma som att multiplicera med 1000 [cite: 1]', ledtråd:'Hur många tusendelar går på 5 hela?'},
+      {id:'p4_1d', n:'1d', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Beräkna: 3 + 4 · 2', facit:'11', lös:'Prioriteringsregler: 3 + 8 = 11 [cite: 1]', ledtråd:'Multiplikation går före addition.'},
+      {id:'p4_1e', n:'1e', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Beräkna: 245 / 7', facit:'35', lös:'245 / 7 = 35 [cite: 1]', ledtråd:'Använd kort division.'},
+      
+      {id:'p4_2', n:'2', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Vilket av följande tal är det bästa närmevärdet till 13 / 0,432?', choices:['0,03','0,3','3','30','300'], facit:'30', lös:'13 / 0,432 ≈ 13 / 0,4 = 130 / 4 = 32,5. Närmast är 30 [cite: 1]', ledtråd:'Avrunda nämnaren till 0,4.'},
+      
+      {id:'p4_3', n:'3', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Hur mycket smågodis får du för 20 kr om det kostar 6,90 kr/hg?', choices:['20+6,90','20/6,90','20-6,90','6,90/20'], facit:'20 / 6,90', lös:'Antal hg = Totalkostnad / Pris per enhet [cite: 1]', ledtråd:'Tänk kr dividerat med kr per hg.'},
+      
+      {id:'p4_4a', n:'4a', pts:'1/0/0', topic:'Algebra', level:'E', q:'Lös ekvationen: 10 − 5x = 0', facit:'x = 2', lös:'5x = 10 ger x = 2 [cite: 1]', ledtråd:'Vad ska 5 multipliceras med för att bli 10?'},
+      {id:'p4_4b', n:'4b', pts:'1/0/0', topic:'Algebra', level:'E', q:'Lös ekvationen: x/4 − 1 = 5', facit:'x = 24', lös:'x/4 = 6 => x = 24 [cite: 1]', ledtråd:'Börja med att addera 1 på båda sidor.'},
+      {id:'p4_4c', n:'4c', pts:'1/0/0', topic:'Algebra', level:'E', q:'Lös ekvationen: 2(x + 1) = 6', facit:'x = 2', lös:'x + 1 = 3 => x = 2 [cite: 1]', ledtråd:'Dela båda sidor med 2 först.'},
+      {id:'p4_4d', n:'4d', pts:'0/1/0', topic:'Algebra', level:'C', q:'Lös ekvationen: 2x + 2 = 5 − 4x', facit:'x = 0,5', lös:'6x = 3 => x = 3/6 = 0,5 [cite: 1]', ledtråd:'Samla alla x-termer på ena sidan.'},
+      {id:'p4_4e', n:'4e', pts:'0/0/1', topic:'Algebra', level:'A', q:'Lös ekvationen: 3x + 2 = 29 (baserat på 4e layout)', facit:'x = 9', lös:'3x = 27 => x = 9 [cite: 1]', ledtråd:'Subtrahera 2 från båda sidor.'},
+      
+      {id:'p4_5', n:'5', pts:'2/1/0', topic:'Geometri', level:'E', q:'I en triangel är en yttervinkel 130° (vinkel a är sidovinkel) och en toppvinkel är 60° (vinkel b är vertikalvinkel). Beräkna vinklarna a, b och c.', facit:'a=50, b=60, c=70', lös:'a = 180-130=50°. b = 60° (vertikalvinkel). c = 180-50-60=70° [cite: 1]', ledtråd:'Vinkelsumman i en triangel är 180°.'},
+      
+      {id:'p4_6', n:'6', pts:'1/1/0', topic:'Statistik', level:'C', q:'Medelvärdet av 6 olika positiva tal är 7. Medianen är 6. Ge ett förslag på vilka tal det kan vara.', facit:'T.ex. 1, 2, 5, 7, 8, 19', lös:'Summan ska vara 6 · 7 = 42. De två mittersta talen ska ha medelvärde 6 (t.ex. 5 och 7) [cite: 1]', ledtråd:'Summan av talen måste vara 42.'},
+      
+      {id:'p4_7', n:'7', pts:'0/1/0', topic:'Tal & Aritmetik', level:'C', q:'Beräkna: 2/3 + 1/5', facit:'13/15', lös:'MGN=15. 10/15 + 3/15 = 13/15 [cite: 1]', ledtråd:'Förläng bråken till samma nämnare.'},
+      
+      {id:'p4_8', n:'8', pts:'0/3/1', topic:'Statistik/Diagram', level:'C', q:'Diagrammet visar årstider. 36 elever svarade höst (vilket motsvarar 3/10 av cirkeln). Hur många elever svarade vår (2/10)?', facit:'24 st', lös:'3/10 = 36 st => 1/10 = 12 st. Vår (2/10) = 2 · 12 = 24 st [cite: 1]', ledtråd:'Räkna ut hur många elever en "del" i diagrammet motsvarar.'},
+      
+      {id:'p4_9', n:'9', pts:'1/1/0', topic:'Algebra', level:'E', q:'Beräkna värdet av uttrycket 2m + 1/m + 0,1b då m=5 och b=10.', facit:'11,2', lös:'2(5) + 1/5 + 0,1(10) = 10 + 0,2 + 1 = 11,2 [cite: 1]', ledtråd:'Sätt in värdena på m och b i uttrycket.'},
+      
+      {id:'p4_10a', n:'10a', pts:'1/0/0', topic:'Procent', level:'E', q:'Beräkna 7% av 600.', facit:'42', lös:'0,07 · 600 = 42 [cite: 1]', ledtråd:'1% är 6.'},
+      {id:'p4_10b', n:'10b', pts:'1/0/0', topic:'Procent', level:'E', q:'Beräkna 4% av 700.', facit:'28', lös:'0,04 · 700 = 28 [cite: 1]', ledtråd:'1% är 7.'},
+      {id:'p4_10c', n:'10c', pts:'0/1/0', topic:'Procent', level:'C', q:'Hur många procent är 12 kr av 150 kr?', facit:'8%', lös:'12 / 150 = 4 / 50 = 8 / 100 = 8% [cite: 1]', ledtråd:'Delen / Det hela.'},
+      
+      {id:'p4_11a', n:'11a', pts:'1/0/0', topic:'Algebra', level:'E', q:'Förenkla uttrycket: 4x + 5 − x + 2', facit:'3x + 7', lös:'Samla x-termer och konstanter [cite: 1]', ledtråd:'4x - x och 5 + 2.'},
+      {id:'p4_11b', n:'11b', pts:'1/0/0', topic:'Algebra', level:'E', q:'Skriv uttrycket 2(x − 6) utan parentes.', facit:'2x − 12', lös:'Multiplicera in 2 i parentesen [cite: 1]', ledtråd:'2 · x och 2 · (-6).'},
+      
+      {id:'p4_12', n:'12', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Dela upp talet 36 i primtalsfaktorer.', facit:'2 · 2 · 3 · 3', lös:'36 = 6 · 6 = 2 · 3 · 2 · 3 [cite: 1]', ledtråd:'Använd ett faktorträd.'},
+      
+      {id:'p4_13a', n:'13a', pts:'1/0/0', topic:'Tal & Aritmetik', level:'E', q:'Vilket tal saknas? 3,467 − ? = 3,254', facit:'0,213', lös:'3,467 - 3,254 = 0,213 [cite: 1]', ledtråd:'Subtrahera svaret från det första talet.'},
+      
+      {id:'p4_14', n:'14', pts:'0/0/2', topic:'Algebra', level:'A', q:'Lös ekvationen: 3(x + 8) − 12 + 2(4 − x) = 64', facit:'x = 44', lös:'3x + 24 - 12 + 8 - 2x = 64 => x + 20 = 64 => x = 44 [cite: 1]', ledtråd:'Förenkla vänsterledet helt innan du löser ut x.'},
+
+      // Del 2 - Med miniräknare (Uppgift 15-20)
+      {id:'p4_15', n:'15', pts:'1/0/0', topic:'Procent', level:'E', q:'Willes livs sålde 120 burkar läsk i april och 180 i maj. Med hur många procent ökade försäljningen?', facit:'50%', lös:'Ökning: 60. 60 / 120 = 0,5 = 50% [cite: 1]', ledtråd:'Skillnaden / Ursprungsvärdet.'},
+      
+      {id:'p4_16', n:'16', pts:'0/2/0', topic:'Geometri', level:'C', q:'Gräsmattans area är 168 m². Ena sidan är 8 m. Beräkna omkretsen.', facit:'58 m', lös:'Andra sidan: 168 / 8 = 21 m. Omkrets: 21+21+8+8 = 58 m [cite: 1]', ledtråd:'Räkna ut den okända sidan först.'},
+      
+      {id:'p4_17', n:'17', pts:'0/3/2', topic:'Problemlösning', level:'A', q:'Bea har sålt 1/2 av korvarna och Leila 1/4. Det återstår 15 st. Hur många fanns från början?', facit:'60 st', lös:'1/2 + 1/4 = 3/4. Kvar är 1/4. Om 1/4 = 15 st är 4/4 = 60 st [cite: 1]', ledtråd:'Hur stor andel motsvarar de 15 korvarna?'},
+      
+      {id:'p4_18', n:'18', pts:'1/2/3', topic:'Problemlösning/Procent', level:'A', q:'Ökning av användare: Kevin säger störst antal (2010-2012), Noa säger störst procent (2006-2008). Visa att båda har rätt.', facit:'Båda har rätt', lös:'Antal: 901-400=501 milj (störst). Procent: (110-15)/15 ≈ 633% (störst) [cite: 1]', ledtråd:'Beräkna både skillnad i antal och procentuell ökning.'},
+      
+      {id:'p4_19', n:'19', pts:'1/3/0', topic:'Algebra', level:'C', q:'Per är 18 cm längre än My. Tillsammans är de 288 cm. Hur långa är de? Lös med ekvation.', facit:'My: 135 cm, Per: 153 cm', lös:'x + (x + 18) = 288 => 2x = 270 => x = 135 [cite: 1]', ledtråd:'Låt My vara x.'},
+      
+      {id:'p4_20a', n:'20a', pts:'1/1/1', topic:'Geometri', level:'C', q:'Beräkna volymen av prismat (bas 2,2m, höjd 2m, längd 3,5m).', facit:'7,7 m³', lös:'Basytan (triangel): (2,2 · 2) / 2 = 2,2. Volym: 2,2 · 3,5 = 7,7 [cite: 1]', ledtråd:'Basytan gånger höjden.'},
+      {id:'p4_20b', n:'20b', pts:'2/3/3', topic:'Geometri', level:'A', q:'Beräkna prismats begränsningsarea (5 ytor).', facit:'27,5 m²', lös:'2 trianglar (4,4 m²) + 3 rektanglar (3 · 7,7 = 23,1 m²) = 27,5 m² [cite: 1]', ledtråd:'Glöm inte att det är två trianglar och tre sidoytor.'}
+    ]
+  }
 };
 
 /* ════════════════════════════════════════════════════════════════════════════
